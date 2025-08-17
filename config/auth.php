@@ -36,10 +36,22 @@ return [
     */
 
     'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
+        // 'web' => [
+        //     'driver' => 'session',
+        //     'provider' => 'users',
+        // ],
+        'adminGuard' => [
+            'driver' => 'sanctum',
+            'provider' => 'admin',
         ],
+        'promoterGuard' => [
+            'driver' => 'sanctum',
+            'provider' => 'promoter',
+        ],
+        'customerGuard' => [
+            'driver' => 'sanctum',
+            'provider' => 'customer',
+        ]
     ],
 
     /*
@@ -60,9 +72,21 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        // 'users' => [
+        //     'driver' => 'eloquent',
+        //     'model' => env('AUTH_MODEL', App\Models\User::class),
+        // ],
+        'admin' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => App\Models\Admin::class,
+        ],
+        'promoter' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Promoter::class,
+        ],
+        'customer' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Customer::class,
         ],
 
         // 'users' => [
