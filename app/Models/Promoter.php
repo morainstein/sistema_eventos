@@ -17,4 +17,9 @@ class Promoter extends User
             $builder->where('role', UserRoleEnum::PROMOTER->value);
         });
     }
+
+    public function events()
+    {
+        return $this->hasMany(Event::class, 'promoter_id');
+    }
 }
