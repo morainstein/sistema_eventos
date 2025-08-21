@@ -30,26 +30,41 @@ return new class extends Migration
         
         Schema::create('events', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('promoter_id')->references('id')->on('users');
+            $table->foreignUuid('promoter_id')
+                ->references('id')
+                ->on('users');
             $table->string('title');
             $table->text('description')->nullable();
-            $table->dateTime('start_date');
-            $table->dateTime('end_date');
+            $table->dateTime('start_dateTime');
+            $table->dateTime('end_dateTime');
             $table->string('banner_link')->nullable();
+            $table->timestamps();
         });
 
-        Schema::create('batchs', function (Blueprint $table) {
+        Schema::create('batches', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('id_event')->references('id')->on('events');
-            $table->integer('batch',false, true);
+            $table->foreignUuid('event_id')
+                ->references('id')
+                ->on('events')
+                ->onDelete('cascade');
+            $table->integer('batch', false, true);
             $table->float('price', 8, 2);
-            $table->integer('tickets_qty',false, true);//->nullable()->default(null);
+            $table->integer('tickets_qty',false, true);
+            $table->integer('tickets_sold',false, true)->default(0);
+            $table->dateTime('end_dateTime');
+            $table->timestamps();
         });
 
         Schema::create('tickets', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('id_batch')->references('id')->on('batchs');
-            $table->foreignUuid('id_user')->references('id')->on('users');
+            $table->foreignUuid('batch_id')
+                ->references('id')
+                ->on('batches');
+            $table->foreignUuid('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
+            $table->timestamps();
         });
 
         // Schema::create('discounts', function (Blueprint $table) {
@@ -64,10 +79,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('tickets');
-        Schema::dropIfExists('batchs');
+        Schema::dropIfExists('batches');
         Schema::dropIfExists('events');
         Schema::dropIfExists('users');
-        // Schema::dropIfExists('roles');
         Schema::dropIfExists('discounts');
     }
 };
