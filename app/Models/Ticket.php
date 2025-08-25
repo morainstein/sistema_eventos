@@ -14,6 +14,7 @@ class Ticket extends Model
     protected $fillable = [
         'batch_id',
         'user_id',
+        'final_price'
     ];
 
     public function batch()
