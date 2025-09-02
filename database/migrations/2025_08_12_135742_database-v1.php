@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\PaymentStatus;
 use App\Enums\UserRoleEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,9 +15,11 @@ return new class extends Migration
     {    
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            // $table->foreignId('id_role')->references('id')->on('roles');
-            $table->enum('role', [UserRoleEnum::ADMIN,UserRoleEnum::PROMOTER,UserRoleEnum::CUSTOMER])
-                ->comment("User role: ".UserRoleEnum::ADMIN->value.", ".UserRoleEnum::PROMOTER->value.", ".UserRoleEnum::CUSTOMER->value."");
+            $table->enum('role', [
+                UserRoleEnum::ADMIN,
+                UserRoleEnum::PROMOTER,
+                UserRoleEnum::CUSTOMER
+                ])->comment("User role: ".UserRoleEnum::ADMIN->value.", ".UserRoleEnum::PROMOTER->value.", ".UserRoleEnum::CUSTOMER->value);
             $table->string('phone',20)->unique();
             $table->string('registry', 20)->unique()
                 ->comment('Registry number: CPF or CNPJ');
@@ -24,6 +27,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
+            $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();
         });
@@ -48,7 +52,7 @@ return new class extends Migration
                 ->on('events')
                 ->onDelete('cascade');
             $table->integer('batch', false, true);
-            $table->float('price', 8, 2);
+            $table->bigInteger('price')->comment("value in cents");
             $table->integer('tickets_qty',false, true);
             $table->integer('tickets_sold',false, true)->default(0);
             $table->dateTime('end_dateTime');
@@ -64,12 +68,15 @@ return new class extends Migration
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade');
+            $table->enum('payment_status', [
+                PaymentStatus::PENDING,
+                PaymentStatus::PAYED,
+                PaymentStatus::CANCELLED,
+                PaymentStatus::VOIDED
+            ]);
+            $table->bigInteger('final_price')->comment("value in cents");
             $table->timestamps();
         });
-
-        // Schema::create('discounts', function (Blueprint $table) {
-        //     $table->uuid('id')->primary();
-        // });
 
     }
 
@@ -82,6 +89,6 @@ return new class extends Migration
         Schema::dropIfExists('batches');
         Schema::dropIfExists('events');
         Schema::dropIfExists('users');
-        Schema::dropIfExists('discounts');
+        // Schema::dropIfExists('discounts');
     }
 };
