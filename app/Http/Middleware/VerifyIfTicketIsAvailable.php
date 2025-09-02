@@ -25,6 +25,8 @@ class VerifyIfTicketIsAvailable
             return response()->json(['message' => 'No tickets available'], 400);
         }
 
+        $request->attributes->set("batch",$batch);
+        
         return $next($request);
     }
 }
