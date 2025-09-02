@@ -1,30 +1,27 @@
 <?php
 
-use App\Http\Controllers\EventController;
-use App\Http\Middleware\AuthPromoter;
-use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-
-    dd('API is working!');
-});
-
 /**
- * Events Routens
- */
-include_once 'eventApiRoutes.php';
-
-/**
- * Admin Routes
+ * Admin routes
  */
 include_once 'adminApiRoutes.php';
 
 /**
- * Promoter Routes
+ * Customer routes
+*/
+include_once 'customerApiRoutes.php';
+
+/**
+ * Promoter routes
  */
 include_once 'promoterApiRoutes.php';
 
 /**
- * Customer Routes
-*/
-include_once 'customerApiRoutes.php';
+ * Events routes
+ */
+include_once 'eventApiRoutes.php';
+
+/**
+ * Webhooks routes
+ */
+include_once 'webhooksApiRoutes.php';
+
