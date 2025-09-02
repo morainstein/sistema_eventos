@@ -2,29 +2,24 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
-use App\Enums\UserRoleEnum;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 abstract class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasUuids, HasApiTokens;
+    use HasFactory, Notifiable, HasUuids, HasApiTokens, SoftDeletes;
 
     protected $table = 'users';
 
     protected $fillable = [
         'name',
-        'registry',
         'phone',
         'email',
-        'password',
+        'password', 
         'role',
     ];
 
@@ -41,10 +36,4 @@ abstract class User extends Authenticatable
         ];
     }
 
-    // protected function password() : Attribute
-    // {
-    //     return Attribute::make(
-    //         set: fn ($value) => bcrypt($value)
-    //     );
-    // }
 }
