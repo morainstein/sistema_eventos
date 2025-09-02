@@ -27,7 +27,7 @@ class CreateEventRequest extends FormRequest
             "start_dateTime" => "required|date_format:Y-m-d H:i",
             "end_dateTime" => "required|date_format:Y-m-d H:i",
             "banner_link" => "string",
-            "batches" => "nullable|array",
+            "batches" => "required|nullable|array",
                 "batches.*.price" => "required_with:batches.*| numeric|min:0",
                 "batches.*.tickets_qty" => "required_with:batches.*| integer|min:1",
                 "batches.*.end_dateTime" => "required_with:batches.*| date_format:Y-m-d H:i",

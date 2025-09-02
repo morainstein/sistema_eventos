@@ -2,94 +2,79 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\EventCreatedEvent;
 use App\Http\Requests\CreateEventRequest;
-use App\Models\Batch;
+use App\Http\Requests\UploadedBannerRequest;
 use App\Models\Event;
+use App\Services\EventService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use PDOException;
 
 class EventController extends Controller
 {
     public function index()
     {
         $events = Event::with('batches')->get();
-        return response()->json($events);
+
+        $acumulatedEvents = [];
+        foreach($events as $event){
+            $acumulatedEvents[] = EventService::returnEventWithFirstAvailableBatch($event);
+        }
+        return response()->json($acumulatedEvents);
     }
 
     public function store(CreateEventRequest $request)
-    {
-        DB::beginTransaction();
+    /**
+     * - Cria eventos com seus respectivos lotes de ingressos
+     * - Dispara evento de evento criado
+     *   - Listener: Informa todos os admins via email 
+     */
+    {       
+        try{
+            $event = EventService::createEventWithBatches($request);
 
-        $event = new Event();
-        $event->promoter_id = Auth::user()->id;
-        $event->fill($request->all());
-        $event->save();
+        }catch (\PDOException $e) {
+            $message = 'Error creating event and batches. Try again or contact support.';
 
-        if ($request->has('batches')) {
-            try{
-                $batchCount = Batch::count();
-                foreach ($request->batches as $batchData) {
-                    $batch = new Batch($batchData);
-                    $batch->batch = ++$batchCount;
-                    $batch->event_id = $event->id;
-                    $batch->save();
-                }
-            }catch (\Exception $e) {
-                DB::rollBack();
-                $message = 'Error creating event and batches. Try again or contact support.';
-                return response()->json(['message' => $message], 500);
-            }
+            return response()->json(['message' => $message], 500);
         }
 
-        DB::commit();
+        EventCreatedEvent::dispatch($event);
 
-        return response()->json(201);
+        return response()->json(['message' => 'Event registered successfully'],201);
     }
 
     public function show(string $eventId)
+    /**
+     * - Retorna o evento somente com o lote disponível (e todos os lotes fechados antes do disponível)
+     */
     {
-        try {
-            $event = Event::findOrFail($eventId);
-
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        $event = Event::with('batches')->find($eventId);
+        if(!$event){
             return response()->json(['message' => 'Event not found'], 404);
         }
 
-        $batch = Batch::where('event_id', $event->id)
-        ->orderBy('batch', 'asc')
-        ->get();
-
-        $acumulateSoldBatches = [];
-        $firstAvailable = null;
-        foreach ($batch as $b) {
-            if($b->tickets_sold == $b->tickets_qty) {
-                $acumulateSoldBatches[] = $b;
-            }
-
-            if($b->tickets_sold < $b->tickets_qty && is_null($firstAvailable)) {
-                $firstAvailable = $b;
-            }
-        }
-
-        $acumulateSoldBatches[] = $firstAvailable;
-
-        $event->batches = $acumulateSoldBatches;
-
-        return response()->json($event);
+        $eventDto = EventService::returnEventWithFirstAvailableBatch($event);
+        
+        return response()->json($eventDto, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    public function uploadedBanner(Event $event, UploadedBannerRequest $request)
+    {        
+        $bannerPath = Storage::url($request->file('banner')->store('banners'));
+
+        $event->banner_link = $bannerPath;
+        $event->save();
+
+        return response()->json(['message' => 'banner has been stored'],201);
+    }
+
     public function update(Request $request, Event $event)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Event $event)
     {
         //

@@ -7,6 +7,7 @@ use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\LoginRequest;
 use App\Models\Promoter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class PromoterController extends Controller
@@ -22,14 +23,15 @@ class PromoterController extends Controller
     {
         $promoter = new Promoter([
             'name' => $request->name,
-            'registry' => $request->registry,
             'phone' => $request->phone,
             'email' => $request->email,
             'password' => $request->password, 
         ]);
 
+        $promoter->registry = $request->registry;
+
         $promoter->save();
-        return response()->json(['message' => 'Admin registered successfully'], 201);
+        return response()->json(['message' => 'Promoter registered successfully'], 201);
     }
 
     public function authenticate(LoginRequest $request)
@@ -48,27 +50,25 @@ class PromoterController extends Controller
         return response()->json(['token' => $token->plainTextToken], 200);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Promoter $promoter)
     {
-        //
+        return $promoter;
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Promoter $promoter)
+    public function update(Request $request)
     {
-        //
+        Auth::user()->fill($request->all())->save();
+
+        return response()->json(['message' => 'Promoter updated successfully']);
     }
 
+    public function destroy()
     /**
-     * Remove the specified resource from storage.
+     * Soft delete
      */
-    public function destroy(Promoter $promoter)
     {
-        //
+        Auth::user()->delete();
+
+        return response()->json(['message' => 'Promoter has been soft deleted'], 200);
     }
 }
