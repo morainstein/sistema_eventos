@@ -12,7 +12,6 @@ class Event extends Model
     protected $table = 'events';
 
     protected $fillable = [
-        'promoter_id',
         'title',
         'description',
         'start_dateTime',
@@ -37,5 +36,15 @@ class Event extends Model
     public function batches()
     {
         return $this->hasMany(Batch::class, 'event_id');
+    }
+
+    public function discounts()
+    {
+        return $this->hasMany(Discount::class, 'event_id');
+    }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class, 'event_id');
     }
 }

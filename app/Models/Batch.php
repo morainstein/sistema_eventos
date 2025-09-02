@@ -12,10 +12,13 @@ class Batch extends Model
     protected $table = 'batches';
 
     protected $fillable = [
-        'event_id',
         'price',
         'tickets_qty',
         'end_dateTime'
+    ];
+
+    protected $with = [
+        'event'
     ];
 
     protected $hidden = [

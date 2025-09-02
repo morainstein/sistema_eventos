@@ -11,6 +11,14 @@ class Promoter extends User
         'role' => UserRoleEnum::PROMOTER->value,
     ];
 
+    protected $with = [
+        'credentials'
+    ];
+
+    protected $hidden = [
+        'credentials'
+    ];
+
     protected static function booted()
     {
         static::addGlobalScope('role', function (Builder $builder) {
@@ -21,5 +29,10 @@ class Promoter extends User
     public function events()
     {
         return $this->hasMany(Event::class, 'promoter_id');
+    }
+
+    public function credentials()
+    {
+        return $this->hasOne(PaggueCredentials::class,'promoter_id','id');
     }
 }
