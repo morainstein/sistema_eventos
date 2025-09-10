@@ -17,14 +17,11 @@ class DeletePaggueCredentialsWithinOneMonth implements ShouldQueue
         //
     }
 
-    public function delay()
+    public function withDelay(PaggueCredentialsCreatedEvent $event): int
     {
-        return now()->addMonth();
+        return 60 * 60 * 24 * 30; // 30 days
     }
 
-    /**
-     * Handle the event.
-     */
     public function handle(PaggueCredentialsCreatedEvent $event): void
     {
         $credentials = $event->credentials;
