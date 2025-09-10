@@ -13,14 +13,15 @@ use PDOException;
 
 class EventController extends Controller
 {
+    public function __construct(
+        public readonly EventService $eventService
+    ){}
+
     public function index()
     {
         $events = Event::with('batches')->get();
 
-        $acumulatedEvents = [];
-        foreach($events as $event){
-            $acumulatedEvents[] = EventService::returnEventWithFirstAvailableBatch($event);
-        }
+        $acumulatedEvents = $this->eventService->returnAllEventWithFirstAvailableBatch($events);
         return response()->json($acumulatedEvents);
     }
 
@@ -30,11 +31,11 @@ class EventController extends Controller
      * - Dispara evento de evento criado
      *   - Listener: Informa todos os admins via email 
      */
-    {       
-        try{
-            $event = EventService::createEventWithBatches($request);
+    {
+        try {
+            $event = $this->eventService->createEventWithBatches($request);
 
-        }catch (\PDOException $e) {
+        } catch (\PDOException $e) {
             $message = 'Error creating event and batches. Try again or contact support.';
 
             return response()->json(['message' => $message], 500);
@@ -55,14 +56,14 @@ class EventController extends Controller
             return response()->json(['message' => 'Event not found'], 404);
         }
 
-        $eventDto = EventService::returnEventWithFirstAvailableBatch($event);
-        
+        $eventDto = $this->eventService->returnOneEventWithFirstAvailableBatch($event);
+
         return response()->json($eventDto, 200);
     }
 
     public function uploadedBanner(Event $event, UploadedBannerRequest $request)
     {        
-        $bannerPath = Storage::url($request->file('banner')->store('banners'));
+        $bannerPath = Storage::url($request->file('banner')->store('/banners'));
 
         $event->banner_link = $bannerPath;
         $event->save();
@@ -72,11 +73,13 @@ class EventController extends Controller
 
     public function update(Request $request, Event $event)
     {
-        //
+        $message = "As this application is only for portfolio, this functionality was not implemented due to the complexity of the business rules";
+        return response()->json(['message' => $message],501);
     }
 
     public function destroy(Event $event)
     {
-        //
+        $message = "As this application is only for portfolio, this functionality was not implemented due to the complexity of the business rules";
+        return response()->json(['message' => $message],501);
     }
 }

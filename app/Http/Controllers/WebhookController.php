@@ -4,14 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Enums\PaymentStatus;
 use App\Events\TicketPayedEvent;
-use App\Mail\NotifyCustomerTicketPurchaseSuccessfullyMail;
-use App\Mail\NotifyPromoterTicketPurchaseMail;
-use App\Mail\TicketPayedMail;
-use App\Models\Promoter;
+
 use App\Models\Ticket;
-use App\Services\TicketService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 
 class WebhookController extends Controller
 {
