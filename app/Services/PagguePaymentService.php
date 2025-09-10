@@ -34,7 +34,7 @@ class PagguePaymentService
     {
         $body = [
             "external_id" => $ticket->id,
-            "amount" => ($ticket->final_price * 100),
+            "amount" => $ticket->final_price,
             "description" => "Pagamento do ingresso #{$ticket->id}",
             "payer_name" => Auth::user()->name
         ];
@@ -54,10 +54,9 @@ class PagguePaymentService
             'url' => env('APP_DOMAIN_NAME') .route('paggue.webhook.cash-in', absolute: false)
         ];
 
-        $response = $this->body($body)->post(PaggueLinks::WEBHOOK_MANAGE_URL->value)->throw();
+        $response = $this->body($body)->post(PaggueLinks::WEBHOOK_MANAGE_URL->value);
 
         return $response->object()->id;
-
     }
 
     public function deletePixWebhook()
