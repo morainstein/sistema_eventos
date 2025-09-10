@@ -22,6 +22,8 @@ class IncrementsTicketsSoldQtylistener
      */
     public function handle(TicketPayedEvent $event): void
     {
-        Batch::find($event->ticket->batch_id)->increment('tickets_sold')->save();
+        $batch = Batch::find($event->ticket->batch_id);
+        $batch->increment('tickets_sold');
+        $batch->save();
     }
 }
