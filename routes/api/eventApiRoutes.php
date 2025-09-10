@@ -20,6 +20,7 @@ Route::get('/events/{eventId}', [EventController::class, 'show'])
 Route::middleware(AuthPromoter::class)->group(function (){
     Route::post('/events', [EventController::class, 'store'])
         ->middleware(VerifyIfPaymentCredentialsExists::class);
+        
     Route::post('/events/{event}/banner', [EventController::class, 'uploadedBanner'])
         ->whereUuid('event');
 
