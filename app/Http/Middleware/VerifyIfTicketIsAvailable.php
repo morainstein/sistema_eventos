@@ -22,7 +22,7 @@ class VerifyIfTicketIsAvailable
             : false;
         
         if(!$ticketIsAvailable) {
-            return response()->json(['message' => 'No tickets available'], 400);
+            return response()->json(['message' => 'No tickets available'], 410);
         }
 
         $request->attributes->set("batch",$batch);

@@ -7,6 +7,7 @@ use App\Mail\EventCreatedMail;
 use App\Models\Admin;
 use App\Models\Batch;
 use App\Models\Event;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +17,24 @@ use stdClass;
 
 class EventService
 {
-    static public function returnEventWithFirstAvailableBatch(Event $event)
+    /**
+     * @return Array<stdClass> $acumulatedDtoEvents
+     * @param Illuminate\Database\Eloquent\Collection<App\Models\Event> $events
+     */
+    public function returnAllEventWithFirstAvailableBatch(Collection $events)
+    {
+        $acumulatedDtoEvents = [];
+        foreach($events as $event){
+            $acumulatedDtoEvents[] = $this->returnOneEventWithFirstAvailableBatch($event);
+        }
+
+        return $acumulatedDtoEvents;
+    }
+
+    /**
+     * @return stdClass $eventDto
+     */
+    public function returnOneEventWithFirstAvailableBatch(Event $event)
     {
         $acumulateSoldBatches = [];
         $firstAvailable = null;
@@ -44,7 +62,7 @@ class EventService
     /**
      * @throws PDOException
      */
-    static public function createEventWithBatches(Request $request): Event
+    public function createEventWithBatches(Request $request): Event
     {
         DB::beginTransaction();
 

@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Route;
 Route::post('/admin', [AdminController::class, 'store']);
 Route::post('/admin/login', [AdminController::class, 'authenticate']);
 
-
 /**
  * Rotas privadas para gerenciar admin: 
  *   Mostra um | Atualiza |Apaga (soft delete)

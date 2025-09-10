@@ -14,13 +14,15 @@ Route::post('/customer/login', [CustomerController::class, 'authenticate']);
 
 /**
  * Rotas privadas para gerenciar cliente: 
- *   Compra ingresso| Mostra um | Atualiza |Apaga (soft delete)
+ *   Compra ingresso | Mostra todos os ingressos do cliente | Mostra um | Atualiza |Apaga (soft delete)
  */
 Route::middleware(AuthCustomer::class)->group(function () {
     Route::post('/batch/{batch}/ticket', [CustomerController::class, 'buyTicket'])
         ->whereUuid('batch')
         ->middleware(VerifyIfTicketIsAvailable::class);
     
+    Route::get('/customer/tickets',[CustomerController::class, 'showTickets']);
+
     Route::get('/customer',[CustomerController::class, 'show']);
     Route::put('/customer',[CustomerController::class, 'update']);
     Route::delete('/customer',[CustomerController::class, 'destroy']);

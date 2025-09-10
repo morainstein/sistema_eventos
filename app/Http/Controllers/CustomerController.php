@@ -22,6 +22,9 @@ use Illuminate\Support\Facades\Hash;
 
 class CustomerController extends Controller
 {
+    public function __construct(
+        public readonly TicketService $ticketService
+    ){}
 
     public function store(CreateUserRequest $request)
     {
@@ -59,7 +62,7 @@ class CustomerController extends Controller
         DB::beginTransaction();
  
             try{
-                $finalPrice = TicketService::calculateTicketsFinalPrice($request);
+                $finalPrice = $this->ticketService->calculateTicketsFinalPrice($request);
             }catch(ModelNotFoundException $e){
                 DB::rollBack();
                 return response()->json(['message' => 'Coupon does not exists'],404);
@@ -99,9 +102,14 @@ class CustomerController extends Controller
         ], 201);
     }
 
+    public function showTickets()
+    {
+        return response()->json(Auth::user()->tickets);
+    }
+
     public function show()
     {
-        return Auth::user();
+        return response()->json(Auth::user());
     }
 
     public function update(UpdateUserRequest $request)

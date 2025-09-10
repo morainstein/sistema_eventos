@@ -28,7 +28,7 @@ class PaggueCredentialsController extends Controller
         $credentials->fill($request->all());
         $credentials->promoter_id = Auth::user()->id;
         $credentials->save();
-        
+
         PaggueCredentialsCreatedEvent::dispatch($credentials);
 
         $message = 'Credentials has been stored. For security reasons, credentials will be destroyed within a month. In case you had old credentials, it has been replaced by these new ones you sent now';

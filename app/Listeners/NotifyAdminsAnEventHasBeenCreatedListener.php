@@ -26,7 +26,7 @@ class NotifyAdminsAnEventHasBeenCreatedListener implements ShouldQueue
     {
         $event = $event->event;
         $admins = Admin::all();
-
+        
         foreach($admins as $admin){
             $email = new EventCreatedMail($admin,$event);
             Mail::queue($email);
