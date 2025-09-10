@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
 {
-    use HasUuids;
+    use HasUuids, HasFactory;
 
     protected $table = 'events';
 
@@ -27,6 +28,14 @@ class Event extends Model
         "description" => null,
         "banner_link" => null
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'start_dateTime' => 'datetime:Y-m-d H:i',
+            'end_dateTime' => 'datetime:Y-m-d H:i',
+        ];
+    }
 
     public function promoter()
     {

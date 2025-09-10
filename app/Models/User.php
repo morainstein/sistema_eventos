@@ -20,12 +20,14 @@ abstract class User extends Authenticatable
         'phone',
         'email',
         'password', 
-        'role',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+        'role',
+        'updated_at',
+        'deleted_at'
     ];
 
     protected function casts(): array

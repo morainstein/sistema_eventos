@@ -4,12 +4,13 @@ namespace App\Models;
 
 use App\Enums\PaymentStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Ticket extends Model
 {
-    use HasUuids;
+    use HasUuids, HasFactory;
 
     protected $table = 'tickets';
 

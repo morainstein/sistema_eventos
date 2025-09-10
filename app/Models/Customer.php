@@ -17,4 +17,9 @@ class Customer extends User
             $builder->where('role', UserRoleEnum::CUSTOMER->value);
         });
     }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class, 'user_id');
+    }
 }
