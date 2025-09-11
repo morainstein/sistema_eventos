@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Enums\DiscountType;
-use App\Enums\PaggueLinks;
 use App\Http\Middleware\AuthCustomer;
 use App\Models\Batch;
 use App\Models\Customer;
@@ -88,7 +86,7 @@ class CustomerBuyTicketRouteTest extends TestCase
         Discount::factory()->create([
             'event_id' => $batch->event->id,
             'coupon_code' => $coupon,
-            'discount_type' => DiscountType::FIXED->value,
+            'discount_type' => Discount::FIXED,
             'discount_amount' => $discountAmount
         ]);
 
@@ -114,7 +112,7 @@ class CustomerBuyTicketRouteTest extends TestCase
         $coupon = 'PERCENTAGE15OFF';
         $price = fake('pt_BR')->numberBetween(20,300);
         $discountAmount = 10;
-        $finalPrice = (int) round($price - ($price * $discountAmount / 100));
+        $finalPrice = (int) $price - round($price * $discountAmount / 100);
 
         $batch = Batch::factory()
             ->for(Event::factory()
@@ -125,7 +123,7 @@ class CustomerBuyTicketRouteTest extends TestCase
         Discount::factory()->create([
             'event_id' => $batch->event->id,
             'coupon_code' => $coupon,
-            'discount_type' => DiscountType::PERCENTAGE->value,
+            'discount_type' => Discount::PERCENTAGE,
             'discount_amount' => $discountAmount
         ]);
 
