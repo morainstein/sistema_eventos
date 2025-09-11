@@ -1,0 +1,88 @@
+services:
+  db:
+    image: mysql:latest
+    container_name: eventos-database
+    environment:
+      MYSQL_USER: "wagner"
+      MYSQL_PASSWORD: "wagner"
+      # MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_ROOT_PASSWORD: "123"
+      MYSQL_DATABASE: "sistema_eventos"
+    networks:
+      - eventos-network
+    ports:
+      - "3306:3306"
+
+  app:
+    build:
+      context: ./infra/app
+    container_name: eventos-app
+    working_dir: /app
+    volumes:
+      - .:/app
+      - ./infra/app/php-prod.ini:/usr/local/etc/php/conf.d/prod.ini
+      - ./infra/app/entrypoint.sh:/app/entrypoint.sh
+      - ./infra/app/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+    networks:
+      - eventos-network
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+
+  web:
+    image: nginx:latest
+    container_name: eventos-nginx
+    volumes:
+      - ./infra/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./infra/nginx/fastcgi_params:/etc/nginx/fastcgi_params
+    networks:
+      - eventos-network
+    ports:
+      - "8080:80"
+    depends_on:
+      - app
+
+  smtp:
+    image: axllent/mailpit
+    container_name: eventos-mailpit
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    networks:
+      - eventos-network
+    ports:
+      - "8025:8025"
+    depends_on:
+      - app
+
+  bucket:
+    image: quay.io/minio/minio 
+    container_name: eventos-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    networks:
+      - eventos-network
+    ports:
+      - "9001:9001"
+    depends_on:
+      - app
+
+  bucket-setup:
+      image: minio/mc
+      networks:
+      - eventos-network
+      depends_on:
+        - bucket
+      entrypoint: >
+        /bin/sh -c "
+        until (mc alias set local http://bucket:9000 minioadmin minioadmin) do sleep 5; done &&
+        mc mb --ignore-existing local/uploads &&
+        exit 0
+        "
+
+networks:
+  eventos-network:
+    driver: bridge
