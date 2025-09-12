@@ -5,13 +5,11 @@ namespace App\Http\Controllers;
 use App\Enums\UserRoleEnum;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\Admin;
-use App\Models\Client;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
 
 class AdminController extends Controller
 {
@@ -26,11 +24,13 @@ class AdminController extends Controller
     {
         $admin = new Admin([
             'name' => $request->name,
-            'registry' => $request->registry,
             'phone' => $request->phone,
             'email' => $request->email,
             'password' => $request->password, 
         ]);
+
+        $admin->registry = $request->registry;
+
 
         $admin->save();
         return response()->json(['message' => 'Admin registered successfully'], 201);
@@ -52,28 +52,25 @@ class AdminController extends Controller
         return response()->json(['token' => $token->plainTextToken], 200);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Request $request)       
+    public function show()
     {
-
-        dd($this->user);
+        return Auth::user();
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Admin $admin)
+    public function update(UpdateUserRequest $request)
     {
-        //
+        Auth::user()->fill($request->all())->save();
+
+        return response()->json(['message' => 'Customer updated successfully'],200);
     }
 
+    public function destroy()
     /**
-     * Remove the specified resource from storage.
+     * Soft delete
      */
-    public function destroy(Admin $admin)
     {
-        //
+        Auth::user()->delete();
+
+        return response()->json(['message' => 'Customer has been soft deleted'], 200);
     }
 }

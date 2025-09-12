@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\Admin;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\PersonalAccessToken;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,6 +20,7 @@ class AuthAdmin
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
+        Auth::setUser($user);
         return $next($request);
     }
 }
