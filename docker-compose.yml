@@ -26,7 +26,8 @@ services:
     volumes:
       - .:/app
       - ./infra/app/php-prod.ini:/usr/local/etc/php/conf.d/prod.ini
-      - ./infra/app/prod-init.sh:/app/prod-init.sh
+      - ./infra/app/app1-init.sh:/app/app1-init.sh
+      - ./infra/app/app2-init.sh:/app/app2-init.sh
       - ./infra/app/test-init.sh:/app/test-init.sh
       - ./infra/app/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
     networks:
@@ -42,7 +43,8 @@ services:
     volumes:
       - .:/app
       - ./infra/app/php-prod.ini:/usr/local/etc/php/conf.d/prod.ini
-      - ./infra/app/prod-init.sh:/app/prod-init.sh
+      - ./infra/app/app1-init.sh:/app/app1-init.sh
+      - ./infra/app/app2-init.sh:/app/app2-init.sh
       - ./infra/app/test-init.sh:/app/test-init.sh
       - ./infra/app/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
     networks:
