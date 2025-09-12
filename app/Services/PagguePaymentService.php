@@ -51,7 +51,7 @@ class PagguePaymentService
     {
         $body = [
             'type' => 0,
-            'url' => env('APP_DOMAIN_NAME') .route('paggue.webhook.cash-in', absolute: false)
+            'url' => env('APP_URL') .route('paggue.webhook.cash-in', absolute: false)
         ];
 
         $response = $this->body($body)->post(PaggueLinks::WEBHOOK_MANAGE_URL->value);
