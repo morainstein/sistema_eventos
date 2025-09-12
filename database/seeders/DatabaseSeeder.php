@@ -21,8 +21,8 @@ class DatabaseSeeder extends Seeder
     {
         Admin::factory()->create([
             "name" => "Admin Oliveira",
-            "registry" => "000.000.000-00",
-            "phone" => "(75)9 0000-0000",
+            "registry" => "111.000.000-00",
+            "phone" => "(75)9 1111-0000",
             "email" => "admin@oliveira.com",
             "password" => "12345678"
 
@@ -30,9 +30,9 @@ class DatabaseSeeder extends Seeder
 
         $promoter = Promoter::factory()->has(PaggueCredentials::factory(),'credentials')
             ->create([
-            "name" => "Promotor da Silva",
-            "registry" => "111.000.000-00",
-            "phone" => "(75)9 1111-0000",
+            "name" => "Promotor Silva",
+            "registry" => "222.000.000-00",
+            "phone" => "(75)9 2222-0000",
             "email" => "promotor@silva.com",
             "password" => "12345678"
         ]);
@@ -68,8 +68,8 @@ class DatabaseSeeder extends Seeder
 
         Customer::factory()->create([
             "name" => "Cliente Santos",
-            "registry" => "222.000.000-00",
-            "phone" => "(75)9 2222-0000",
+            "registry" => "333.000.000-00",
+            "phone" => "(75)9 3333-0000",
             "email" => "cliente@santos.com",
             "password" => "12345678",
         ]);
