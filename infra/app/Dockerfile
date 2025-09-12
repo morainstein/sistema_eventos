@@ -26,5 +26,12 @@ RUN pecl install xdebug
 
 COPY ../../ /app/
 
+COPY ./prod-init.sh /app/
+RUN chmod 755 /app/prod-init.sh
+
+COPY ./test-init.sh /app/
+RUN chmod 755 /app/test-init.sh
+
 WORKDIR /app
-EXPOSE 9000
+EXPOSE 9000 8000
+

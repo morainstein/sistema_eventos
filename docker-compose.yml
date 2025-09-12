@@ -3,32 +3,52 @@ services:
     image: mysql:latest
     container_name: eventos-database
     environment:
-      MYSQL_USER: "wagner"
-      MYSQL_PASSWORD: "wagner"
-      # MYSQL_RANDOM_ROOT_PASSWORD: "yes"
-      MYSQL_ROOT_PASSWORD: "123"
+      MYSQL_USER: "db_user"
+      MYSQL_PASSWORD: "db_password"
       MYSQL_DATABASE: "sistema_eventos"
+      
+    # ---- SOMENTE PARA FACILITAR TESTES! 
+    # Em produção, utiliza-se senha de root aleatória por segurança  
+      MYSQL_ROOT_PASSWORD: "123"
+      # MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    # -------------------------------------------------------------
+    
     networks:
       - eventos-network
     ports:
       - "3306:3306"
 
-  app:
+  app1:
     build:
       context: ./infra/app
-    container_name: eventos-app
+    container_name: eventos-app1
     working_dir: /app
     volumes:
       - .:/app
       - ./infra/app/php-prod.ini:/usr/local/etc/php/conf.d/prod.ini
-      - ./infra/app/entrypoint.sh:/app/entrypoint.sh
+      - ./infra/app/prod-init.sh:/app/prod-init.sh
+      - ./infra/app/test-init.sh:/app/test-init.sh
       - ./infra/app/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
     networks:
       - eventos-network
     depends_on:
       - db
-    ports:
-      - "8000:8000"
+
+  app2:
+    build:
+      context: ./infra/app
+    container_name: eventos-app2
+    working_dir: /app
+    volumes:
+      - .:/app
+      - ./infra/app/php-prod.ini:/usr/local/etc/php/conf.d/prod.ini
+      - ./infra/app/prod-init.sh:/app/prod-init.sh
+      - ./infra/app/test-init.sh:/app/test-init.sh
+      - ./infra/app/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+    networks:
+      - eventos-network
+    depends_on:
+      - db
 
   web:
     image: nginx:latest
@@ -41,7 +61,8 @@ services:
     ports:
       - "8080:80"
     depends_on:
-      - app
+      - app1
+      - app2
 
   smtp:
     image: axllent/mailpit
@@ -54,21 +75,23 @@ services:
     ports:
       - "8025:8025"
     depends_on:
-      - app
+      - app1
+      - app2
 
   bucket:
     image: quay.io/minio/minio 
     container_name: eventos-minio
     command: server /data --console-address ":9001"
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_ROOT_USER: bucket_user
+      MINIO_ROOT_PASSWORD: bucket_password
     networks:
       - eventos-network
     ports:
       - "9001:9001"
     depends_on:
-      - app
+      - app1
+      - app2
 
   bucket-setup:
       image: minio/mc
@@ -78,7 +101,7 @@ services:
         - bucket
       entrypoint: >
         /bin/sh -c "
-        until (mc alias set local http://bucket:9000 minioadmin minioadmin) do sleep 5; done &&
+        until (mc alias set local http://bucket:9000 bucket_user bucket_password) do sleep 5; done &&
         mc mb --ignore-existing local/uploads &&
         exit 0
         "
