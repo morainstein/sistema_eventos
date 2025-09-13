@@ -1,12 +1,12 @@
-<h1>Projeto portfólio: Sistema de gestão de eventos.</h1>
+# Projeto portfólio: Sistema de gestão de eventos.
 
-<h2>Sobre</h2>
+## Sobre
   Este projeto tem como único objetivo demostrar minhas competências de desenvolvimento back-end, portanto, nem todas as funcionalidades estarão 100% implementadas (afinal de contas, qualquer sistema sempre pode melhorar, não é mesmo?!), como por exemplo, rotas para operações simples, ou funcionalidades onde regras de negócio poderiam ser aplicadas de maneiras muito distintas, dependendo do negócio.  
 
   <br>
   O foco do projeto é na demonstração prática, de técnicas de desenvolvimento que já exigem certo conhecimento e experiência, como Docker ou eventos assincronos, por exemplo.
 
-<h3>Competências adiquiridas e técnicas envolvidas neste projeto:</h3>
+### Competências adquiridas e técnicas envolvidas neste projeto:
   
   - PHP/Laravel
       - Gerenciamento de extensões com PECL
@@ -42,17 +42,15 @@
       - Bucket s3-like com [quay.io/minio/minio](https://hub.docker.com/r/minio/minio)
       - Banco de dados com [MySQL](https://hub.docker.com/_/mysql)
 
-<h2>Rodando o projeto</h2>
+## Rodando o projeto
 
-<h3>Baixando o projeto</h3>
+### Baixando o projeto
 
   ```bash
   git clone https://github.com/morainstein/sistema_eventos.git
   ```
 
-<h3>Configuração do ambiente do projeto</h3>
-
-
+### Configuração do ambiente do projeto
 
   O projeto é baixado praticamente pronto, restando apenas as configurações das variáveis de ambiente no arquivo **.env** .
 
@@ -71,13 +69,13 @@
     O Ngrok cria um túnnel de conexão entre a porta escolhida na sua máquina, e os servidores deles, disponibilizando o uri de acesso público para a sua máquina. Este uri será necessário nesta variável de ambiente (**APP_URL**) para que o gateway de pagamento possa enviar requisições de confirmação de pagamento.
 
 
-<h3>Rotas<h3>
+### Rotas
 
   As rotas do projeto podem ser encontradas em:
   - [Link da coleção Postman](https://.postman.co/workspace/My-Workspace~2a47f7c6-7f48-450e-8ca1-fe4c5d8be9f9/collection/41276021-25cb46cc-42f4-41b0-bd80-f62d88269299?action=share&creator=41276021&active-environment=41276021-acfc1749-64a6-4e08-aab1-ecdaae4180c3)
   - [Json exportado pelo Postman](/sistema_eventos.postman_collection.json)
 
-<h3>Executando a aplicação</h3>
+### Executando a aplicação
 
   **Todos os comandos a seguir devem ser executados na pasta raiz do projeto**
 
@@ -111,7 +109,7 @@
     **Os dados de exemplo dos usuários inseridos no banco através do script *prod-init.sh* coincidem com as coleções do postman**
   </small>
 
-<h3>Considerações importantes para rodar o projeto</h3>
+### Considerações importantes para rodar o projeto
 
   Como o projeto comportaria o cadastro de vários promotores de eventos, onde cada promotor criaria seu próprio evento e receberia o valor dos ingressos em sua conta, não faria sentido cadastrar credenciais fixas para receber o pagamento, fazendo-se necessário o cadastro das credenciais do gateway de pagamento escolhido [Paggue](https://paggue.io) de cada promotor, para gerenciar esta integração.
 
@@ -125,3 +123,15 @@
   Em resumo, para testar completamente o sistema, terá que cadastrar credenciais válidas que se integram a [API da Paggue](http://go.paggue.io/dev)
 
   Para uma análise mais aprofundada, consulte as rotas *store* e *destroy* do controllador *[PaggueCredentialsController](/app/Http/Controllers/PaggueCredentialsController.php)*
+
+## Possíveis melhorias 
+
+### Arquitetura do projeto
+- API Gateway para permitir ponto único de entrada na aplicação. (implementado)
+- Load Balancer para balancear a carga de requisições entre os servidores de aplicação.(implementado)
+- Serviço de cache descentralizado (como um Redis), para melhorar a performance na busca de dados frequentes.
+- Testes de carga, logs e profiling para encontrar gargalos na aplicação, permitindo o investimento de recursos nos pontos adequados.
+
+### Aplicação
+- Localização do evento.
+- Paginação dos dados para o client que consumir a api.
