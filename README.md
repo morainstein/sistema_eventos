@@ -68,7 +68,6 @@
 
     O Ngrok cria um túnnel de conexão entre a porta escolhida na sua máquina, e os servidores deles, disponibilizando o uri de acesso público para a sua máquina. Este uri será necessário nesta variável de ambiente (**APP_URL**) para que o gateway de pagamento possa enviar requisições de confirmação de pagamento.
 
-
 ### Rotas
 
   As rotas do projeto podem ser encontradas em:
@@ -124,6 +123,12 @@
 
   Para uma análise mais aprofundada, consulte as rotas *store* e *destroy* do controllador *[PaggueCredentialsController](/app/Http/Controllers/PaggueCredentialsController.php)*
 
+## Modelagem 
+
+[Arquitetura do projeto](/modelagem/Arquitetura_do_projeto.png)  
+[Diagram de casos de uso](/modelagem/Diagrama_de_casos_de_uso.png)  
+[Banco de dados](/modelagem/Banco_de_dados.png)  
+
 ## Possíveis melhorias 
 
 ### Arquitetura do projeto
@@ -135,3 +140,4 @@
 ### Aplicação
 - Localização do evento.
 - Paginação dos dados para o client que consumir a api.
+- Autenticação com OAuth2 para facilitar utilização por parte dos clientes
