@@ -125,9 +125,20 @@
 
 ## Modelagem 
 
-[Arquitetura do projeto](/modelagem/Arquitetura_do_projeto.png)  
-[Diagram de casos de uso](/modelagem/Diagrama_de_casos_de_uso.png)  
-[Banco de dados](/modelagem/Banco_de_dados.png)  
+<p align="center">Arquitetura do projeto</p>
+<p align="center">
+  <img  src="./modelagem/Arquitetura_do_projeto.png" width="500"/>
+</p>
+
+<p align="center">Diagrama de casos de uso</a></p>
+<p align="center">
+  <img  src="./modelagem/Diagrama_de_casos_de_uso.png" width="500"/>
+</p>
+
+<p align="center">Banco de dados</p>
+<p align="center">
+  <img  src="./modelagem/Banco_de_dados.png" width="500"/>
+</p>
 
 ## Possíveis melhorias 
 
